@@ -1169,6 +1169,40 @@ end
 local lastUpdateCheck = 0
 local updateCheckInterval = 300000 -- 5 minutes in milliseconds
 
+local function checkForUpdates(silent)
+    local url = "https://raw.githubusercontent.com/Zaidan-alfero/PoliceHelperWIRP/main/PoliceHelperWIRP.lua"
+    local response, status = http.request(url)
+    if status == 200 and response then
+        local currentScript = io.open(getWorkingDirectory() .. "\\moonloader\\PoliceHelperWIRP.lua", "r")
+        if currentScript then
+            local currentContent = currentScript:read("*all")
+            currentScript:close()
+            if currentContent ~= response then
+                local newScript = io.open(getWorkingDirectory() .. "\\moonloader\\PoliceHelperWIRP.lua", "w")
+                if newScript then
+                    newScript:write(response)
+                    newScript:close()
+                    sampAddChatMessage("{00FF00}Script updated successfully! Restart the game to apply changes.", -1)
+                else
+                    sampAddChatMessage("{FF0000}Failed to update script: Could not write to file.", -1)
+                end
+            else
+                if not silent then
+                    sampAddChatMessage("{FFFF00}Script is up to date.", -1)
+                end
+            end
+        else
+            if not silent then
+                sampAddChatMessage("{FF0000}Failed to check for updates: Could not read current script.", -1)
+            end
+        end
+    else
+        if not silent then
+            sampAddChatMessage("{FF0000}Failed to check for updates: HTTP request failed.", -1)
+        end
+    end
+end
+
 imgui.OnFrame(function() return window[0] end, function()
     local currentTime = os.time() * 1000
     if currentTime - lastUpdateCheck > updateCheckInterval then
@@ -1217,43 +1251,6 @@ function toggleHelperMenu()
     end
 end
 sampRegisterChatCommand("pdh", toggleHelperMenu)
-
-local lastUpdateCheck = 0
-local updateCheckInterval = 300000 -- 5 minutes in milliseconds
-
-local function checkForUpdates(silent)
-    local url = "https://raw.githubusercontent.com/Zaidan-alfero/PoliceHelperWIRP/main/PoliceHelperWIRP.lua"
-    local response, status = http.request(url)
-    if status == 200 and response then
-        local currentScript = io.open(getWorkingDirectory() .. "\\moonloader\\PoliceHelperWIRP.lua", "r")
-        if currentScript then
-            local currentContent = currentScript:read("*all")
-            currentScript:close()
-            if currentContent ~= response then
-                local newScript = io.open(getWorkingDirectory() .. "\\moonloader\\PoliceHelperWIRP.lua", "w")
-                if newScript then
-                    newScript:write(response)
-                    newScript:close()
-                    sampAddChatMessage("{00FF00}Script updated successfully! Restart the game to apply changes.", -1)
-                else
-                    sampAddChatMessage("{FF0000}Failed to update script: Could not write to file.", -1)
-                end
-            else
-                if not silent then
-                    sampAddChatMessage("{FFFF00}Script is up to date.", -1)
-                end
-            end
-        else
-            if not silent then
-                sampAddChatMessage("{FF0000}Failed to check for updates: Could not read current script.", -1)
-            end
-        end
-    else
-        if not silent then
-            sampAddChatMessage("{FF0000}Failed to check for updates: HTTP request failed.", -1)
-        end
-    end
-end
 
 function updateCommandHandler()
     sampAddChatMessage("{FFFF00}Checking for updates...", -1)
