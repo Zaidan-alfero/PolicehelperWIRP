@@ -1166,6 +1166,8 @@ local function drawTabContent(windowWidth, sidebarWidth, button_width, button_he
     end
 end
 
+local lastUpdateCheck = 0
+local updateCheckInterval = 300000 -- 5 minutes in milliseconds
 
 imgui.OnFrame(function() return window[0] end, function()
     local currentTime = os.time() * 1000
