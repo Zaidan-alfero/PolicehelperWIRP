@@ -1220,7 +1220,7 @@ local lastUpdateCheck = 0
 local updateCheckInterval = 300000 -- 5 minutes in milliseconds
 
 local function checkForUpdates(silent)
-    local url = "https://raw.githubusercontent.com/Zaidan-alfero/PolicehelperWIRP/main/PoliceHelperWIRP.lua"
+    local url = "https://raw.githubusercontent.com/Zaidan-alfero/PolicehelperWIRP/refs/heads/main/source"
     local response, status = http.request(url)
     if status == 200 and response then
         local currentScript = io.open(getWorkingDirectory() .. "\\moonloader\\PoliceHelperWIRP.lua", "r")
